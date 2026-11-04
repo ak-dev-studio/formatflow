@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FormatFlow</title>
+<style>body{font-family:Segoe UI,system-ui,sans-serif;background:#0e0f13;color:#eee;display:flex;justify-content:center;padding:60px 16px}
+.c{max-width:380px;width:100%}h1{font-size:24px}input,button{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #333;font-size:15px;margin-top:12px}
+input{background:#16181d;color:#eee}button{background:#6d7cf0;color:#fff;border:0;font-weight:600;cursor:pointer}#m{margin-top:14px;font-size:14px;color:#9aa}</style></head><body><div class="c">
+<h1>FormatFlow</h1><div id="f" style="display:none"><p>Choose a new password.</p><input id="p" type="password" placeholder="New password (6+ characters)"><button id="b">Save password</button></div><div id="m"></div></div>
+<script>
+const URL_="https://ehlwpsavqsebpeldwqnu.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVobHdwc2F2cXNlYnBlbGR3cW51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2MzQ5OTcsImV4cCI6MjEwOTIxMDk5N30.QqVKhlBlBEIZMrBcxJlPH1W4I2Xd9NB96l5msTEM1Uw";
+const h=new URLSearchParams(location.hash.slice(1)),tok=h.get("access_token"),m=document.getElementById("m");
+if(tok&&h.get("type")==="recovery")document.getElementById("f").style.display="block";
+else if(location.hash.includes("error"))m.textContent="This link has expired. Go back to FormatFlow and press Forgot password again.";
+else m.textContent="Open FormatFlow on your computer to continue.";
+document.getElementById("b").onclick=async()=>{const p=document.getElementById("p").value;if(p.length<6){m.textContent="Use at least 6 characters.";return}
+const r=await fetch(URL_+"/auth/v1/user",{method:"PUT",headers:{apikey:KEY,Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({password:p})});
+if(r.ok){document.getElementById("f").style.display="none";m.textContent="Password saved. Go back to FormatFlow and sign in."}else{const j=await r.json().catch(()=>({}));m.textContent=j.msg||j.message||"Could not save. Please try again."}};
+</script></body></html>
